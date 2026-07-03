@@ -1,0 +1,29 @@
+name: lwel-control-env
+
+channels:
+  - conda-forge
+  - defaults
+
+dependencies:
+  - python=3.11
+
+  - numpy
+  - scipy
+  - pandas
+
+  - matplotlib
+
+  - h5py
+
+  - pillow
+
+  - notebook
+  - jupyterlab
+  - ipykernel
+
+  - pip
+
+  - pip:
+      - seabreeze
+      - pylablib
+      - keyboard

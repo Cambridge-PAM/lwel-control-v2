@@ -216,3 +216,32 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Environment
+.venv/
+env/
+ENV/
+
+# VS Code
+.vscode/
+
+# Data
+*.h5
+*.hdf5
+data/*
+
+!data/.gitkeep
+
+# OS
+.DS_Store
+Thumbs.db
+`
