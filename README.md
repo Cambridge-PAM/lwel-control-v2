@@ -456,7 +456,3 @@ Copyright (c) Cambridge-PAM
 Permission is hereby granted to use, modify and distribute this software for research and educational purposes.
 
 ---
-
-# Contact
-
-For development, calibration methodology, or hardware integration issues, contact the LWEL software maintainer or Cambridge-PAM research team.
