@@ -33,6 +33,58 @@ def mean_brightness(image):
     return np.mean(image)
 
 
+def camera_metrics(image):
+    """
+    Calculate image quality metrics.
+    """
+
+    metrics = {
+        "mean": float(np.mean(image)),
+        "max": float(np.max(image)),
+        "min": float(np.min(image)),
+        "std": float(np.std(image)),
+        "total_pixels": image.size,
+    }
+
+    metrics["saturated_pixels"] = int(
+        np.sum(image >= 254)
+    )
+
+    metrics["saturation_fraction"] = (
+        metrics["saturated_pixels"]
+        / metrics["total_pixels"]
+    )
+
+    return metrics
+
+
+def camera_status(metrics):
+    
+    sat_frac = metrics["saturation_fraction"]
+
+    if sat_frac > 0.05:
+        return (
+            "FAIL",
+            "Camera heavily saturated."
+        )
+
+    if sat_frac > 0.01:
+        return (
+            "WARNING",
+            "Camera approaching saturation."
+        )
+
+    if metrics["mean"] < 20:
+        return (
+            "WARNING",
+            "Image underexposed."
+        )
+
+    return (
+        "PASS",
+        "Camera calibration acceptable."
+    )
+
 def auto_exposure(
         cam,
         target_mean=120,
@@ -75,4 +127,12 @@ def auto_exposure(
             min(exposure,5)
         )
 
-    return exposure, image
+    
+    metrics = camera_metrics(image)
+
+    return (
+        exposure,
+        image,
+        metrics
+    )
+
