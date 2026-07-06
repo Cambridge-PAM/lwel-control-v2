@@ -46,39 +46,9 @@ def spectrometer_metrics(
 
     return {
         "peak_counts": float(peak),
-        "detector_usage": detector_usage * 100,
+        "detector_usage": float(detector_usage * 100),
         "saturated": peak >= detector_max
     }
-
-def spectrometer_status(
-        peak_counts,
-        detector_max=65535
-):
-
-    usage = peak_counts / detector_max
-
-    if usage > 0.98:
-        return (
-            "FAIL",
-            "Detector saturated."
-        )
-
-    if usage > 0.90:
-        return (
-            "WARNING",
-            "Detector close to saturation."
-        )
-
-    if usage < 0.20:
-        return (
-            "WARNING",
-            "Detector utilisation low."
-        )
-
-    return (
-        "PASS",
-        "Detector operating normally."
-    )
 
 def auto_integration_time(
         spec,
@@ -103,7 +73,7 @@ def auto_integration_time(
         )
 
         wl, intensity = (
-            spectrum(spec)
+            acquire_spectrum(spec)
         )
 
         peak = np.max(intensity)
@@ -117,11 +87,18 @@ def auto_integration_time(
             peak-target
         ) < target*0.05:
 
+            metrics = spectrometer_metrics(
+                intensity,
+                detector_max
+            )
+
             return (
                 integration,
                 wl,
-                intensity
+                intensity,
+                metrics
             )
+
 
         scale = (
             target /

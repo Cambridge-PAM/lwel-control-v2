@@ -2,23 +2,24 @@ import yaml
 import numpy as np
 import matplotlib.pyplot as plt
 
-from camera import (
+from src.camera import (
     connect_camera,
     configure_camera,
     auto_exposure,
-    camera_metrics,
-    camera_status
+    camera_metrics
 )
 
-from spectrometer import (
+from src.spectrometer import (
     connect_spectrometer,
     acquire_spectrum,
     auto_integration_time,
-    spectrometer_metrics,
-    spectrometer_status
+    spectrometer_metrics
 )
 
-
+from src.device_factory import (
+    build_camera,
+    build_spectrometer
+)
 
 def load_config():
 
@@ -30,34 +31,50 @@ def save_config(cfg):
 
     with open("config.yml","w") as f:
 
-        yaml.dump(
+        yaml.safe_dump(
             cfg,
             f,
             sort_keys=False
         )
 
 
-def acquire_dark_reference(spec):
+def acquire_dark_reference(
+    spec,
+    simulation=False
+):
 
-    print(
-        "\nPlace dark cap / close shutter."
-    )
+    if simulation:
+
+        spec.enable_dark_mode()
+
+        result = acquire_spectrum(
+            spec
+        )
+
+        spec.disable_dark_mode()
+
+        return result
 
     input(
-        "Press ENTER to acquire dark spectrum:"
+        "\nAcquire DARK SPECTRUM - press ENTER:"
     )
 
     return acquire_spectrum(spec)
 
 
-def acquire_bright_reference(spec):
+def acquire_bright_reference(
+    spec,
+    simulation=False
+):
 
-    print(
-        "\nIlluminate sample."
-    )
+    if simulation:
+
+        return acquire_spectrum(
+            spec
+        )
 
     input(
-        "Press ENTER to acquire bright reference:"
+        "\nAcquire BRIGHT SPECTRUM - press ENTER:"
     )
 
     return acquire_spectrum(spec)
@@ -139,9 +156,7 @@ def main():
     # CAMERA CALIBRATION
     #################################################
 
-    cam = connect_camera(
-        cfg["camera"]["serial"]
-    )
+    cam = build_camera(cfg)
 
     configure_camera(
         cam,
@@ -195,14 +210,25 @@ def main():
     # SPECTROMETER CALIBRATION
     #################################################
 
-    spec = connect_spectrometer()
-
-    dark_wl,dark_int = (
-        acquire_dark_reference(spec)
+    spec = build_spectrometer(cfg)
+        
+    simulation = (
+        cfg["development"]["mode"]
+        == "simulation"
     )
-
-    bright_wl,bright_int = (
-        acquire_bright_reference(spec)
+    
+    dark_wl, dark_int = (
+        acquire_dark_reference(
+            spec,
+            simulation
+        )
+    )
+    
+    bright_wl, bright_int = (
+        acquire_bright_reference(
+            spec,
+            simulation
+        )
     )
 
     np.save(
@@ -376,6 +402,16 @@ def main():
     print(spec_message)
 
     print("\n" + "="*60)
+    
+    if cam_state == "FAIL":
+        raise RuntimeError(
+            "Camera calibration failed"
+        )
+
+    if spec_state == "FAIL":
+        raise RuntimeError(
+            "Spectrometer calibration failed"
+        )
 
     #########################################
     # SAVE UPDATED CONFIG
@@ -403,6 +439,7 @@ def main():
                 spec_metrics["detector_usage"]
         }
     }
+
     
     save_config(cfg)
 

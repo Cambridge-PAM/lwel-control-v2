@@ -1,32 +1,31 @@
 import yaml
 
 from src.camera import (
-    connect as camera_connect,
-    configure as camera_configure
+    connect_camera as camera_connect,
+    configure_camera as camera_configure
 )
 
 from src.spectrometer import (
-    connect as spectrometer_connect,
+    connect_spectrometer as spectrometer_connect,
     set_integration
 )
 
 from src.acquisition import run
 
+from src.device_factory import (
+    build_camera,
+    build_spectrometer
+)
+
 def load_config():
     with open("config.yml") as f:
         return yaml.safe_load(f)
-
-camera = camera_connect(
-    CAMERA_SERIAL
-)
 
 def main():
     
     cfg = load_config()
     
-    camera = camera_connect(
-        cfg["camera"]["serial"]
-    )
+    camera = build_camera(cfg)
 
     camera_configure(
         camera,
@@ -34,7 +33,7 @@ def main():
         tuple(cfg["camera"]["roi"])
     )
 
-    spectrometer = spectrometer_connect()
+    spectrometer = build_spectrometer(cfg)
     
     set_integration(
     spectrometer,

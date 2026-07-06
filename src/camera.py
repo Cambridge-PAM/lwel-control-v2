@@ -19,9 +19,9 @@ def configure_camera(
 ):
 
     camera.set_exposure(exposure)
-
-    camera.set_roi(*roi)
-
+    
+    if hasattr(camera, "set_roi"):
+            camera.set_roi(*roi)
 
 def acquire_image(camera):
 
@@ -57,38 +57,10 @@ def camera_metrics(image):
 
     return metrics
 
-
-def camera_status(metrics):
-    
-    sat_frac = metrics["saturation_fraction"]
-
-    if sat_frac > 0.05:
-        return (
-            "FAIL",
-            "Camera heavily saturated."
-        )
-
-    if sat_frac > 0.01:
-        return (
-            "WARNING",
-            "Camera approaching saturation."
-        )
-
-    if metrics["mean"] < 20:
-        return (
-            "WARNING",
-            "Image underexposed."
-        )
-
-    return (
-        "PASS",
-        "Camera calibration acceptable."
-    )
-
 def auto_exposure(
         cam,
-        target_mean=120,
-        tolerance=10,
+        target_mean=20,
+        tolerance=1,
         max_iterations=15
 ):
 
@@ -112,8 +84,10 @@ def auto_exposure(
         )
 
         if abs(error) < tolerance:
+            
+            metrics = camera_metrics(image)
 
-            return exposure, image
+            return exposure, image, metrics
 
         scale = (
             target_mean /
@@ -126,8 +100,7 @@ def auto_exposure(
             0.001,
             min(exposure,5)
         )
-
-    
+        
     metrics = camera_metrics(image)
 
     return (
