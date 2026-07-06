@@ -211,19 +211,50 @@ def main():
     #################################################
 
     spec = build_spectrometer(cfg)
-        
+
     simulation = (
         cfg["development"]["mode"]
         == "simulation"
     )
-    
+
+    (
+        integration,
+        wl,
+        intensity,
+        spec_metrics
+    ) = auto_integration_time(
+        spec,
+        cfg["calibration"][
+            "target_detector_fraction"
+        ],
+        cfg["calibration"][
+            "detector_max_counts"
+        ]
+    )
+
+    (
+        spec_state,
+        spec_message
+    ) = spectrometer_status(
+        spec_metrics["peak_counts"]
+    )
+
+    cfg["spectrometer"][
+        "integration_time_us"
+    ] = int(integration)
+
+    #################################################
+    # REFERENCE ACQUISITION
+    # (after calibration)
+    #################################################
+
     dark_wl, dark_int = (
         acquire_dark_reference(
             spec,
             simulation
         )
     )
-    
+
     bright_wl, bright_int = (
         acquire_bright_reference(
             spec,
@@ -236,7 +267,7 @@ def main():
             "dark_reference"
         ],
         np.vstack(
-            (dark_wl,dark_int)
+            (dark_wl, dark_int)
         )
     )
 
@@ -245,35 +276,9 @@ def main():
             "bright_reference"
         ],
         np.vstack(
-            (bright_wl,bright_int)
+            (bright_wl, bright_int)
         )
     )
-
-    (
-    integration,
-    wl,
-    intensity,
-    spec_metrics
-    ) = auto_integration_time(
-        spec,
-        cfg["calibration"][
-            "target_detector_fraction"
-        ],
-        cfg["calibration"][
-            "detector_max_counts"
-        ]
-    )
-    
-    (
-    spec_state,
-    spec_message
-    ) = spectrometer_status(
-        spec_metrics["peak_counts"]
-    )
-
-    cfg["spectrometer"][
-        "integration_time_us"
-    ] = int(integration)
     
     #################################################
     # PLOTS

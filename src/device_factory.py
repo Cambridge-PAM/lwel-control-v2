@@ -17,7 +17,7 @@ def build_camera(cfg):
 
         return VirtualCamera()
 
-    from camera import (
+    from src.camera import (
         connect_camera
     )
 
@@ -42,7 +42,7 @@ def build_spectrometer(cfg):
 
         return VirtualSpectrometer()
 
-    from spectrometer import (
+    from src.spectrometer import (
         connect_spectrometer
     )
 

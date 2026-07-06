@@ -33,18 +33,32 @@ def mean_brightness(image):
     return np.mean(image)
 
 
-def camera_metrics(image):
+
+def camera_metrics(
+    image
+):
     """
     Calculate image quality metrics.
     """
 
+    max_pixel = float(np.max(image))
+    mean_pixel = float(np.mean(image))
+
     metrics = {
-        "mean": float(np.mean(image)),
-        "max": float(np.max(image)),
+        "mean": mean_pixel,
+        "max": max_pixel,
         "min": float(np.min(image)),
         "std": float(np.std(image)),
         "total_pixels": image.size,
     }
+
+    metrics["peak_fraction"] = (
+        max_pixel / 254
+    )
+
+    metrics["mean_fraction"] = (
+        mean_pixel / 254
+    )
 
     metrics["saturated_pixels"] = int(
         np.sum(image >= 254)
@@ -55,15 +69,21 @@ def camera_metrics(image):
         / metrics["total_pixels"]
     )
 
+    metrics["scale_factor"] = (
+        254 / max(max_pixel, 1)
+    )
+
     return metrics
 
-def auto_exposure(
-        cam,
-        target_mean=20,
-        tolerance=1,
-        max_iterations=15
-):
 
+
+def auto_exposure(
+    cam,
+    target_peak_fraction=0.9,
+    tolerance=0.03,
+    max_iterations=15
+):
+    
     exposure = 0.01
 
     for _ in range(max_iterations):
@@ -72,36 +92,48 @@ def auto_exposure(
 
         image = acquire_image(cam)
 
-        brightness = mean_brightness(image)
+        metrics = camera_metrics(
+            image
+        )
+
+        peak_fraction = (
+            metrics["peak_fraction"]
+        )
+
+        mean_fraction = (
+            metrics["mean_fraction"]
+        )
 
         print(
-            f"Exp={exposure:.4f}s "
-            f"Brightness={brightness:.1f}"
+            f"Exp={exposure:.6f}s "
+            f"Peak={100*peak_fraction:.1f}% "
+            f"Mean={100*mean_fraction:.1f}%"
         )
 
         error = (
-            brightness-target_mean
+            peak_fraction -
+            target_peak_fraction
         )
 
         if abs(error) < tolerance:
-            
-            metrics = camera_metrics(image)
 
-            return exposure, image, metrics
+            return (
+                exposure,
+                image,
+                metrics
+            )
 
         scale = (
-            target_mean /
-            max(brightness,1)
+            target_peak_fraction /
+            max(peak_fraction, 1e-6)
         )
 
         exposure *= scale
 
         exposure = max(
-            0.001,
-            min(exposure,5)
+            0.0001,
+            min(exposure, 6.0)
         )
-        
-    metrics = camera_metrics(image)
 
     return (
         exposure,

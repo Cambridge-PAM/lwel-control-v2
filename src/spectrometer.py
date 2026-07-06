@@ -49,6 +49,7 @@ def spectrometer_metrics(
         "detector_usage": float(detector_usage * 100),
         "saturated": peak >= detector_max
     }
+    
 
 def auto_integration_time(
         spec,
