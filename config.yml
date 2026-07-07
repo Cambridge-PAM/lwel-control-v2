@@ -1,6 +1,6 @@
 camera:
   serial: '16906'
-  exposure_time: 0.040661344537815114
+  exposure_time: 0.04159066418783422
   roi:
   - 100
   - 1440
@@ -9,29 +9,27 @@ camera:
   - 1
   - 1
 spectrometer:
-  integration_time_us: 8920
-references:
-  dark_reference: data/dark_reference.npy
-  bright_reference: data/bright_reference.npy
+  integration_time_us: 8878
+experiment:
+  sample_id: sample_001
+  output_root: data
 acquisition:
-  measurements: 5
-  interval_seconds: 1
+  measurements: 10
+  interval_seconds: 5
 storage:
   h5_file: data/acquisition.h5
 calibration:
   target_detector_fraction: 0.85
   detector_max_counts: 65535
-paths:
-  calibration_folder: data/calibration
 development:
   mode: simulation
 calibration_results:
   camera:
     status: PASS
-    mean_brightness: 48.12629776000976
-    max_pixel: 225.0
+    mean_brightness: 49.23944931030273
+    max_pixel: 227.0
     saturation_fraction: 0.0
   spectrometer:
     status: PASS
-    peak_counts: 53894.500080354024
-    detector_usage: 82.2377356837629
+    peak_counts: 53533.76355484284
+    detector_usage: 81.68728702959157

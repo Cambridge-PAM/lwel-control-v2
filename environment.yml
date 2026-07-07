@@ -12,6 +12,7 @@ dependencies:
   - pandas
 
   - matplotlib
+  - pathlib
 
   - h5py
 

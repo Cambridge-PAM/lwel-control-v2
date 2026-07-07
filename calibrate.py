@@ -1,6 +1,8 @@
 import yaml
 import numpy as np
 import matplotlib.pyplot as plt
+from pathlib import Path
+
 
 from src.camera import (
     connect_camera,
@@ -151,6 +153,16 @@ def spectrometer_status(
 def main():
 
     cfg = load_config()
+    sample_id = cfg["experiment"]["sample_id"]
+    
+    # Create output directory
+    output_root = Path(cfg["experiment"]["output_root"])
+    sample_dir = output_root / sample_id
+    sample_dir.mkdir(parents=True, exist_ok=True)
+
+    # Save dark and bright references in the sample directory
+    dark_reference_path = sample_dir / "dark_reference.npy"
+    bright_reference_path = sample_dir / "bright_reference.npy"
 
     #################################################
     # CAMERA CALIBRATION
@@ -163,7 +175,6 @@ def main():
         cfg["camera"]["exposure_time"],
         tuple(cfg["camera"]["roi"])
     )
-
     
     (
         exposure,
@@ -263,18 +274,14 @@ def main():
     )
 
     np.save(
-        cfg["references"][
-            "dark_reference"
-        ],
+        dark_reference_path,
         np.vstack(
             (dark_wl, dark_int)
         )
     )
 
     np.save(
-        cfg["references"][
-            "bright_reference"
-        ],
+        bright_reference_path,
         np.vstack(
             (bright_wl, bright_int)
         )
@@ -451,12 +458,12 @@ def main():
     print("\nCalibration complete")
     print(
         f"Camera exposure = "
-        f"{exposure:.4f} s"
+        f"{exposure:.5f} s"
     )
 
     print(
         f"Spectrometer integration = "
-        f"{integration:.0f} us"
+        f"{integration:.1f} us"
     )
 
     cam.close()
