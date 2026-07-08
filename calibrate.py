@@ -82,6 +82,24 @@ def acquire_bright_reference(
     return acquire_spectrum(spec)
 
 
+def acquire_backgroundlight_reference(
+    spec,
+    simulation=False
+):
+
+    if simulation:
+
+        return acquire_spectrum(
+            spec
+        )
+
+    input(
+        "\nAcquire BACKGROUND / LIGHTSOURCE OFF SPECTRUM - press ENTER:"
+    )
+
+    return acquire_spectrum(spec)
+
+
 def camera_status(metrics):
 
     sat = (
@@ -163,6 +181,15 @@ def main():
     # Save dark and bright references in the sample directory
     dark_reference_path = sample_dir / "dark_reference.npy"
     bright_reference_path = sample_dir / "bright_reference.npy"
+    background_reference_path = sample_dir / "backgroundlight_reference.npy"
+
+    print("="*60)
+    print("CALIBRATION START")
+    print("="*60)
+    print("\n")
+    print("Plug in all equipment, turn light source on, place empty ring cell behind mask")
+    print("Press ENTER to start")
+    input()
 
     #################################################
     # CAMERA CALIBRATION
@@ -273,6 +300,13 @@ def main():
         )
     )
 
+    backgroundlight_wl, backgroundlight_int = (
+        acquire_backgroundlight_reference(
+            spec,
+            simulation
+        )
+    )
+
     np.save(
         dark_reference_path,
         np.vstack(
@@ -284,6 +318,13 @@ def main():
         bright_reference_path,
         np.vstack(
             (bright_wl, bright_int)
+        )
+    )
+
+    np.save(
+        background_reference_path,
+        np.vstack(
+            (backgroundlight_wl, backgroundlight_int)
         )
     )
     
@@ -298,13 +339,19 @@ def main():
     ax.plot(
         dark_wl,
         dark_int,
-        label="Dark Reference"
+        label="Dark / Spectrometer Covered Reference"
     )
 
     ax.plot(
         bright_wl,
         bright_int,
-        label="Bright Reference"
+        label="Bright / Empty Ring Cell Reference"
+    )
+
+    ax.plot(
+        backgroundlight_wl,
+        backgroundlight_int,
+        label="Background / Light Source Off Reference"
     )
 
     ax.plot(

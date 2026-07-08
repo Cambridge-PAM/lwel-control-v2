@@ -205,6 +205,8 @@ tempCodeRunnerFile.py
 
 # config file
 config.yml
+*.yml
+*.npy
 
 # Ruff stuff:
 .ruff_cache/

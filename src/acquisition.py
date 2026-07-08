@@ -107,7 +107,10 @@ def run(
         if update_callback is not None:
             update_callback(
                 image,
-                intensity
+                intensity,
+                idx=idx,
+                n_measurements=n_measurements,
+                elapsed=elapsed_time
             )
             
     camera.stop_acquisition()

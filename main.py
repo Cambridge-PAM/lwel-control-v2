@@ -45,7 +45,11 @@ def main():
     spectrometer,
         cfg["spectrometer"]["integration_time_us"]
     )
-    wavelengths = spectrometer.wavelengths
+
+    if cfg["development"] == "simulation":
+        wavelengths = spectrometer.wavelengths
+    else:
+        wavelengths = spectrometer.wavelengths()
 
     sample_id = cfg["experiment"]["sample_id"]
 
@@ -68,7 +72,7 @@ def main():
     print("EXPERIMENT CONFIGURATION")
     print("=" * 60)
     print(f"Sample ID              : {sample_id}")
-    print(f"Measurement Duration   : {cfg['acquisition']['measurement_duration']}")
+    print(f"Measurement Duration   : {cfg['acquisition']['measurement_duration']} s")
     print(f"Interval               : {cfg['acquisition']['interval_seconds']} s")
     print(f"Camera exposure        : {cfg['camera']['exposure_time']} us")
     print(f"Spectrometer integration: "
