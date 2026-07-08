@@ -73,7 +73,7 @@ class VirtualCamera:
 
         image += np.random.normal(
             0,
-            5,
+            15,
             image.shape
         )
 

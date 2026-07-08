@@ -235,10 +235,10 @@ def main():
         spec_metrics
     ) = auto_integration_time(
         spec,
-        cfg["calibration"][
+        cfg["spectrometer"][
             "target_detector_fraction"
         ],
-        cfg["calibration"][
+        cfg["spectrometer"][
             "detector_max_counts"
         ]
     )

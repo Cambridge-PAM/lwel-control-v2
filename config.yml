@@ -1,6 +1,18 @@
+experiment:
+  sample_id: sample_001
+  output_root: data
+development:
+  mode: simulation
+acquisition:
+  measurements: 10
+  interval_seconds: 5
+spectrometer:
+  integration_time_us: 10311
+  target_detector_fraction: 0.95
+  detector_max_counts: 65535
 camera:
   serial: '16906'
-  exposure_time: 0.04159066418783422
+  exposure_time: 0.033170054523458135
   roi:
   - 100
   - 1440
@@ -8,28 +20,13 @@ camera:
   - 1080
   - 1
   - 1
-spectrometer:
-  integration_time_us: 8878
-experiment:
-  sample_id: sample_001
-  output_root: data
-acquisition:
-  measurements: 10
-  interval_seconds: 5
-storage:
-  h5_file: data/acquisition.h5
-calibration:
-  target_detector_fraction: 0.85
-  detector_max_counts: 65535
-development:
-  mode: simulation
 calibration_results:
   camera:
     status: PASS
-    mean_brightness: 49.23944931030273
-    max_pixel: 227.0
+    mean_brightness: 40.69996566772461
+    max_pixel: 223.0
     saturation_fraction: 0.0
   spectrometer:
-    status: PASS
-    peak_counts: 53533.76355484284
-    detector_usage: 81.68728702959157
+    status: WARNING
+    peak_counts: 62270.344156499894
+    detector_usage: 95.0184544998854

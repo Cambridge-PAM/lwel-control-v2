@@ -31,7 +31,6 @@ def run(
     cfg,
     camera,
     spectrometer,
-    output_file,
     n_measurements,
     interval_seconds,
     camera_exposure,

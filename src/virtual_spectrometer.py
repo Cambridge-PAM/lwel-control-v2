@@ -1,6 +1,7 @@
 # virtual_spectrometer.py
 
 import numpy as np
+import time
 
 
 class VirtualSpectrometer:
@@ -16,6 +17,9 @@ class VirtualSpectrometer:
             850,
             2048
         )
+        
+        self.start_time = time.time()
+
 
     def integration_time_micros(
         self,
@@ -35,35 +39,40 @@ class VirtualSpectrometer:
     ):
         
         noise = np.random.normal(
-            50,
+            100,
             10,
             len(self.wavelengths)
         )
         
+        elapsed = time.time() - self.start_time
+
         if self.dark_mode:
 
             counts = noise
 
         else:
 
-            peak1 = np.exp(
+            #Oscillating peak amplitudes
+            amp1 = 1.0 + 0.3 * np.sin(2 * np.pi * elapsed / 5)
+            amp2 = 0.7 + 0.2 * np.sin(2 * np.pi * elapsed / 8)
+
+            # Slowly shifting peak positions
+            center1 = 520 + 10 * np.sin(2 * np.pi * elapsed / 20)
+            center2 = 680 + 15 * np.sin(2 * np.pi * elapsed / 30)
+
+            peak1 = amp1 * np.exp(
                 -(
-                    self.wavelengths - 520
-                )**2
-                / 1000
+                    self.wavelengths - center1
+                )**2 / 1000
             )
 
-            peak2 = np.exp(
+            peak2 = amp2 * np.exp(
                 -(
-                    self.wavelengths - 680
-                )**2
-                / 4000
+                    self.wavelengths - center2
+                )**2 / 4000
             )
 
-            signal = (
-                peak1 +
-                0.7*peak2
-            )
+            signal = peak1 + peak2
 
             scale = (
                 self.integration_time
@@ -76,13 +85,11 @@ class VirtualSpectrometer:
                 * 60000
             )
 
-            noise = np.random.normal(
+            counts += np.random.normal(
                 0,
                 150,
                 len(counts)
             )
-
-            counts += noise
 
             counts = np.clip(
                 counts,
