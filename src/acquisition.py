@@ -1,4 +1,6 @@
 import time
+from time import perf_counter, sleep
+
 
 from src.storage import (
     initialise,
@@ -50,22 +52,42 @@ def run(
         interval_seconds
     )
     
-    print("\nSystem ready.")
-    print("Press ENTER to start acquisition.")
+    estimated_duration = (
+        (n_measurements - 1)
+        * interval_seconds
+    )
+
+    print("\n" + "=" * 60)
+    print("SYSTEM READY")
+    print("=" * 60)
+    print(f"Measurements      : {n_measurements}")
+    print(f"Interval          : {interval_seconds:.2f} s")
+    print(f"Expected duration : {estimated_duration:.1f} s")
+    print(f"Output file       : {output_file}")
+    print("=" * 60)
+    print("Press ENTER to start acquisition...")
+
 
     input()
 
     camera.setup_acquisition(nframes=n_measurements)
     camera.start_acquisition()
     
-    start_time = time.time()  # Record the start time
+    print("\n")
+    print("Acquisition running . . . \n")
+    
+    start_time = perf_counter()  # Record the start time
 
     for idx in range(n_measurements):
-        if idx:
-            time.sleep(interval_seconds)
+        
+        scheduled_time = (start_time + idx * interval_seconds)
+        remaining = scheduled_time - perf_counter()
+        if remaining > 0:
+            sleep(remaining)
+        
+        actual_time = perf_counter()
 
         camera.wait_for_frame()
-
         image = camera.read_oldest_image()
 
         wavelength, intensity = spectrometer.spectrum(correct_nonlinearity=True)
@@ -78,7 +100,7 @@ def run(
             intensity
         )
         
-        elapsed_time = time.time() - start_time
+        elapsed_time = actual_time - start_time
         print(f"{idx+1}/{n_measurements}: Elapsed time: {elapsed_time:.2f} seconds")
 
         
@@ -89,6 +111,19 @@ def run(
             )
             
     camera.stop_acquisition()
+    
+    total_time = perf_counter() - start_time
+
+    print("\n" + "=" * 60)
+    print("ACQUISITION COMPLETE")
+    print("=" * 60)
+    print(f"Measurements acquired : {n_measurements}")
+    print(f"Total duration        : {total_time:.2f} s")
+    print(f"Average interval      : "
+        f"{total_time / max(1, n_measurements-1):.3f} s")
+    print(f"Data saved to         : {output_file}")
+    print("=" * 60)
+
 
 
 def create_experiment_folder(cfg):

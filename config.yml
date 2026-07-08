@@ -4,15 +4,15 @@ experiment:
 development:
   mode: simulation
 acquisition:
-  measurements: 10
+  measurement_duration: 60
   interval_seconds: 5
 spectrometer:
-  integration_time_us: 10311
+  integration_time_us: 9852
   target_detector_fraction: 0.95
   detector_max_counts: 65535
 camera:
   serial: '16906'
-  exposure_time: 0.033170054523458135
+  exposure_time: 0.03365998068502547
   roi:
   - 100
   - 1440
@@ -23,10 +23,10 @@ camera:
 calibration_results:
   camera:
     status: PASS
-    mean_brightness: 40.69996566772461
-    max_pixel: 223.0
+    mean_brightness: 41.25441284179688
+    max_pixel: 229.0
     saturation_fraction: 0.0
   spectrometer:
     status: WARNING
-    peak_counts: 62270.344156499894
-    detector_usage: 95.0184544998854
+    peak_counts: 59328.20696172209
+    detector_usage: 90.52904091206545
