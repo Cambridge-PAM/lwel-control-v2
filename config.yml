@@ -2,10 +2,16 @@ experiment:
   sample_id: TMPTMA_CQ_TEST2lowint
   output_root: data
 development:
-  mode: hardware
+  mode: simulation
 acquisition:
   measurement_duration: 2700
   interval_seconds: 10
+storage:
+  # image_mode: 'full' | 'greyscale' | 'greyscale_when_color'
+  image_mode: greyscale_when_color
+  compression:
+    method: gzip
+    level: 4
 spectrometer:
   integration_time_us: 35745
   target_detector_fraction: 0.95

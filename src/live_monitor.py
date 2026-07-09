@@ -26,8 +26,8 @@ class LiveMonitor:
         gs = self.fig.add_gridspec(2, 2, width_ratios=[3, 1])
 
         self.ax_img = self.fig.add_subplot(gs[0, 0])
-        self.ax_spec = self.fig.add_subplot(gs[1, 0])
-        self.ax_text = self.fig.add_subplot(gs[:, 1])
+        self.ax_spec = self.fig.add_subplot(gs[1, :])
+        self.ax_text = self.fig.add_subplot(gs[0, 1])
         self.ax_text.axis("off")
 
         self.image_artist = self.ax_img.imshow(
@@ -112,7 +112,7 @@ class LiveMonitor:
             spec_peak = float("nan")
 
         # Build info text
-        lines = []
+        lines = ["=== Monitoring WEL Formation ==="]
         if elapsed is not None:
             mins = int(elapsed // 60)
             secs = elapsed % 60

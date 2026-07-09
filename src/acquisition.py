@@ -97,7 +97,8 @@ def run(
             idx,
             image,
             wavelength,
-            intensity
+            intensity,
+            cfg=cfg
         )
         
         elapsed_time = actual_time - start_time

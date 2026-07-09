@@ -46,7 +46,7 @@ def main():
         cfg["spectrometer"]["integration_time_us"]
     )
 
-    if cfg["development"] == "simulation":
+    if cfg["development"]["mode"] == "simulation":
         wavelengths = spectrometer.wavelengths
     else:
         wavelengths = spectrometer.wavelengths()
