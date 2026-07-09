@@ -1,3 +1,4 @@
+import shutil
 import yaml
 import numpy as np
 from time import time
@@ -30,6 +31,13 @@ def load_config():
 def main():
     
     cfg = load_config()
+
+    config_source = Path("config.yml")
+    sample_id = cfg["experiment"]["sample_id"]
+    experiment_dir = Path("data") / sample_id
+    experiment_dir.mkdir(parents=True, exist_ok=True)
+    config_copy = experiment_dir / "config_save.yml"
+    shutil.copy2(config_source, config_copy)
     
     camera = build_camera(cfg)
 

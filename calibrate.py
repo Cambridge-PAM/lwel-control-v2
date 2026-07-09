@@ -172,7 +172,16 @@ def main():
 
     cfg = load_config()
     sample_id = cfg["experiment"]["sample_id"]
-    
+
+    print("="*60)
+    print("Calibrate : SAMPLE ID =", sample_id)
+    print("="*60)
+    print("This will overwrite any existing calibration and reference files for this sample.")
+    print("To start calibration: plug in all equipment, adjust light intensity, and place empty ring cell behind mask.")
+    print("This script may need to be run again with/without an ND filter.")
+    print("ENSURE THE OPTICS ARE ALIGNED AND THE LIGHT SOURCE IS ON.")
+    input("Enter to continue:")
+
     # Create output directory
     output_root = Path(cfg["experiment"]["output_root"])
     sample_dir = output_root / sample_id
@@ -183,17 +192,18 @@ def main():
     bright_reference_path = sample_dir / "bright_reference.npy"
     background_reference_path = sample_dir / "backgroundlight_reference.npy"
 
-    print("="*60)
-    print("CALIBRATION START")
-    print("="*60)
-    print("\n")
-    print("Plug in all equipment, turn light source on, place empty ring cell behind mask")
-    print("Press ENTER to start")
-    input()
-
     #################################################
     # CAMERA CALIBRATION
     #################################################
+
+    print("="*60)
+    print("CAMERA CALIBRATION")
+    print("="*60)
+    print("Calibration will automatically adjust the camera exposure time to achieve optimal detector usage.")
+    print("Press ENTER to start")
+    input()
+    print("="*60)
+    print("Connecting to camera...")
 
     cam = build_camera(cfg)
 
@@ -247,6 +257,16 @@ def main():
     #################################################
     # SPECTROMETER CALIBRATION
     #################################################
+
+    print("="*60)
+    print("SPECTROMETER CALIBRATION")
+    print("="*60)
+    print("Calibration will automatically adjust the spectrometer integration time to achieve optimal detector usage.")
+    print("Ensure the beam is not blocked and the light source is on.")
+    print("Press ENTER to start")
+    input()
+    print("="*60)
+    print("Connecting to spectrometer...")
 
     spec = build_spectrometer(cfg)
 

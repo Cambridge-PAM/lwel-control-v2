@@ -79,7 +79,7 @@ def camera_metrics(
 
 def auto_exposure(
     cam,
-    target_peak_fraction=0.9,
+    target_peak_fraction=0.8,
     tolerance=0.03,
     max_iterations=15
 ):
