@@ -1,5 +1,6 @@
 import shutil
 import yaml
+import shutil
 import numpy as np
 from time import time
 from pathlib import Path
@@ -39,6 +40,13 @@ def main():
     config_copy = experiment_dir / "config_save.yml"
     shutil.copy2(config_source, config_copy)
     
+    config_source = Path("config.yml")
+    sample_id = cfg["experiment"]["sample_id"]
+    experiment_dir = Path("data") / sample_id
+    experiment_dir.mkdir(parents=True, exist_ok=True)
+    config_copy = experiment_dir / "config_save.yml"
+    shutil.copy2(config_source, config_copy)
+    
     camera = build_camera(cfg)
 
     camera_configure(
@@ -54,7 +62,7 @@ def main():
         cfg["spectrometer"]["integration_time_us"]
     )
 
-    if cfg["development"] == "simulation":
+    if cfg["development"]["mode"] == "simulation":
         wavelengths = spectrometer.wavelengths
     else:
         wavelengths = spectrometer.wavelengths()

@@ -11,7 +11,6 @@ def connect_camera(serial):
 
     return camera
 
-
 def configure_camera(
     camera,
     exposure,

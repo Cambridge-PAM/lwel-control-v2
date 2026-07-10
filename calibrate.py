@@ -172,7 +172,7 @@ def main():
 
     cfg = load_config()
     sample_id = cfg["experiment"]["sample_id"]
-
+    
     print("="*60)
     print("Calibrate : SAMPLE ID =", sample_id)
     print("="*60)
@@ -181,7 +181,7 @@ def main():
     print("This script may need to be run again with/without an ND filter.")
     print("ENSURE THE OPTICS ARE ALIGNED AND THE LIGHT SOURCE IS ON.")
     input("Enter to continue:")
-
+    
     # Create output directory
     output_root = Path(cfg["experiment"]["output_root"])
     sample_dir = output_root / sample_id
@@ -195,7 +195,7 @@ def main():
     #################################################
     # CAMERA CALIBRATION
     #################################################
-
+    
     print("="*60)
     print("CAMERA CALIBRATION")
     print("="*60)
@@ -257,7 +257,7 @@ def main():
     #################################################
     # SPECTROMETER CALIBRATION
     #################################################
-
+    
     print("="*60)
     print("SPECTROMETER CALIBRATION")
     print("="*60)
@@ -305,16 +305,16 @@ def main():
     # REFERENCE ACQUISITION
     # (after calibration)
     #################################################
-
-    dark_wl, dark_int = (
-        acquire_dark_reference(
+    
+    bright_wl, bright_int = (
+        acquire_bright_reference(
             spec,
             simulation
         )
-    )
+    )   
 
-    bright_wl, bright_int = (
-        acquire_bright_reference(
+    dark_wl, dark_int = (
+        acquire_dark_reference(
             spec,
             simulation
         )

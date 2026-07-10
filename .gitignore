@@ -250,3 +250,4 @@ data/*
 .DS_Store
 Thumbs.db
 `
+config.yml

@@ -2,17 +2,22 @@ experiment:
   sample_id: TMPTMA_CQ_TEST2lowint
   output_root: data
 development:
-  mode: hardware
+  mode: simulation
 acquisition:
   measurement_duration: 2700
   interval_seconds: 10
+storage:
+  image_mode: greyscale_when_color
+  compression:
+    method: gzip
+    level: 4
 spectrometer:
-  integration_time_us: 35745
+  integration_time_us: 10262
   target_detector_fraction: 0.95
   detector_max_counts: 65535
 camera:
   serial: '16906'
-  exposure_time: 0.0006107872128558605
+  exposure_time: 0.033145190453122114
   roi:
   - 100
   - 1440
@@ -23,10 +28,10 @@ camera:
 calibration_results:
   camera:
     status: PASS
-    mean_brightness: 104.64564792209954
-    max_pixel: 222.0
+    mean_brightness: 40.63666915893555
+    max_pixel: 225.0
     saturation_fraction: 0.0
   spectrometer:
     status: WARNING
-    peak_counts: 62054.942541994176
-    detector_usage: 94.68977270465274
+    peak_counts: 61885.438707669215
+    detector_usage: 94.43112643269889
