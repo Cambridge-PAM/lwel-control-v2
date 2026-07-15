@@ -1,4 +1,3 @@
-import shutil
 import yaml
 import shutil
 import numpy as np

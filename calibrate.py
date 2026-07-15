@@ -217,7 +217,12 @@ def main():
         exposure,
         image,
         cam_metrics
-    ) = auto_exposure(cam)
+    ) = auto_exposure(cam,cfg["camera"][
+            "target_detector_fraction"
+        ],
+        cfg["camera"][
+            "detector_max_counts"
+        ])
     
     
     (
