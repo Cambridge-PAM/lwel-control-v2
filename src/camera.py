@@ -34,7 +34,7 @@ def mean_brightness(image):
 
 
 def camera_metrics(
-    image
+    image, detector_max=255
 ):
     """
     Calculate image quality metrics.
@@ -52,15 +52,15 @@ def camera_metrics(
     }
 
     metrics["peak_fraction"] = (
-        max_pixel / 254
+        max_pixel / detector_max
     )
 
     metrics["mean_fraction"] = (
-        mean_pixel / 254
+        mean_pixel / detector_max
     )
 
     metrics["saturated_pixels"] = int(
-        np.sum(image >= 254)
+        np.sum(image >= detector_max)
     )
 
     metrics["saturation_fraction"] = (
@@ -69,16 +69,16 @@ def camera_metrics(
     )
 
     metrics["scale_factor"] = (
-        254 / max(max_pixel, 1)
+        detector_max / max(max_pixel, 1)
     )
 
     return metrics
 
 
-
 def auto_exposure(
     cam,
     target_peak_fraction=0.8,
+    detector_max=255,
     tolerance=0.03,
     max_iterations=15
 ):
@@ -92,7 +92,7 @@ def auto_exposure(
         image = acquire_image(cam)
 
         metrics = camera_metrics(
-            image
+            image, detector_max
         )
 
         peak_fraction = (

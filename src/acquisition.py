@@ -1,6 +1,6 @@
 import time
 from time import perf_counter, sleep
-
+import winsound
 
 from src.storage import (
     initialise,
@@ -113,10 +113,12 @@ def run(
                 n_measurements=n_measurements,
                 elapsed=elapsed_time
             )
-            
-    camera.stop_acquisition()
-    
     total_time = perf_counter() - start_time
+    camera.stop_acquisition()
+
+    frequency = 2500  # Set Frequency To 2500 Hertz
+    duration = 1000  # Set Duration To 1000 ms == 1 second
+    winsound.Beep(frequency, duration)
 
     print("\n" + "=" * 60)
     print("ACQUISITION COMPLETE")
